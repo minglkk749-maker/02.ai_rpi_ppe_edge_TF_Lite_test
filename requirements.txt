@@ -1,0 +1,17 @@
+# 核心矩陣運算
+numpy==1.24.3
+
+# 輕量化電腦視覺 (使用 headless 版本以優化 Docker 鏡像體積)
+opencv-python-headless
+
+# 邊緣 AI 推論核心 (RPi 專用輕量化運行環境)
+# 
+tflite-runtime
+
+# 工業通訊協定 (邊緣端與雲端/儀表板橋樑)
+# 
+paho-mqtt
+
+# 資安與環境變數管理
+# [cite: 1]
+python-dotenv

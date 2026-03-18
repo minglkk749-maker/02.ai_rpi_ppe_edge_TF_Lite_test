@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  ppe-inference:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    # 核心：工業級自動復歸機制 
+    restart: always 
+    privileged: true # 允許存取 RPi Camera 硬體
+    volumes:
+      - /dev:/dev  # 掛載硬體設備路徑
+    env_file:
+      - ../config/.env
+    depends_on:
+      - mqtt-broker
+
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+    restart: always
