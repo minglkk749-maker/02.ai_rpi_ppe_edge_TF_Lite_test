@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 6. 設定環境變數輸出，方便 Log 調查 [cite: 149, 150]
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
 
 # 7. 啟動入口 (指向 src/main.py) [cite: 151, 152]
 CMD ["python", "src/main.py"]
