@@ -1,22 +1,25 @@
-version: '3.8'
+[cite_start]version: '3.8' [cite: 157]
 
 services:
-  ppe-inference:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    # 核心：工業級自動復歸機制 
-    restart: always 
-    privileged: true # 允許存取 RPi Camera 硬體
+  [cite_start]ppe-inference: [cite: 159]
+    [cite_start]build: [cite: 162]
+      [cite_start]context: .. [cite: 163]
+      [cite_start]dockerfile: docker/Dockerfile [cite: 164]
+    
+    # 核心：工業級自動復歸機制，防止跳電或崩潰 [cite: 165, 166]
+    [cite_start]restart: always [cite: 166]
+    
+    # 允許存取 RPi Camera 硬體 [cite: 167]
+    [cite_start]privileged: true [cite: 167]
+    
     volumes:
-      - /dev:/dev  # 掛載硬體設備路徑
+      # 修正掛載點：將 RPi 宿主機目錄掛載至容器 /app 
+      - ../:/app 
+      # 掛載硬體設備路徑，確保抓得到相機 [cite: 169]
+      - /dev:/dev 
+      
     env_file:
-      - ../config/.env
-    depends_on:
-      - mqtt-broker
+      # 讀取設定檔與資安規範 [cite: 170, 171]
+      - ../config/.env 
 
-  mqtt-broker:
-    image: eclipse-mosquitto:latest
-    ports:
-      - "1883:1883"
-    restart: always
+# 備註：此版本移除本地 Broker 服務，直接連接至你的 Asus A17 (10.142.83.47)
