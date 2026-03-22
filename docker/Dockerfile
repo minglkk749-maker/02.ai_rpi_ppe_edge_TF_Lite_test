@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 # 4. 複製套件清單並安裝 [cite: 144, 145]
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt [cite: 146]
+RUN pip install --no-cache-dir -r requirements.txt 
 
 # 5. 複製專案內容 [cite: 147, 148]
 COPY . .
