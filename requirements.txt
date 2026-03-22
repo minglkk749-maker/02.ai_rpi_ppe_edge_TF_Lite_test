@@ -12,6 +12,9 @@ tflite-runtime
 # 
 paho-mqtt
 
+#跨平台的第三方資料庫，可獲取運行時的進程與系統利用率
+psutil
+
 # 資安與環境變數管理
 # [cite: 1]
 python-dotenv
