@@ -1,20 +1,42 @@
 version: '3.8'
 
 services:
+  # 邊緣端 MQTT Broker
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto-broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    restart: always
+
+  # AI 推論服務 (針對 RPi 5 + Camera Module 3 優化)
   ppe-inference:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    
-    # 核心：工業級自動復歸機制 (筆記 P.5)
+    container_name: docker-ppe-inference-1
+    shm_size: '256mb'
     restart: always
-    
-    # 允許存取 RPi Camera 硬體 (筆記 P.6)
-    privileged: true
-    
+    privileged: true  # 必須開啟，以獲取硬體底層控制權
+    depends_on:
+      - mqtt-broker
     volumes:
       - ../:/app
-      - /dev:/dev
-      
+      - /dev:/dev     # 映射全設備節點
+      - /run/udev:/run/udev:ro # 讓容器讀取硬體狀態變更
     env_file:
       - ../config/.env
+    # 針對 RPi 5 影像流路徑的精確映射
+    devices:
+      - "/dev/video0:/dev/video0"
+      - "/dev/media0:/dev/media0"
+      - "/dev/dma_heap:/dev/dma_heap"
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      # 💡 核心修正：使用我們剛才 find 到的絕對路徑
+      - LD_PRELOAD=/usr/libexec/aarch64-linux-gnu/libcamera/v4l2-compat.so
+      # 💡 偵錯建議：將等級設為 2 (Info)，如果還是失敗，我們能看到 libcamera 具體卡在哪
+      - LIBCAMERA_LOG_LEVELS=*:2
